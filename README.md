@@ -1,5 +1,8 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+### API
+https://static.ui.com/fingerprint/ui/public.json
+
 ## Getting Started
 
 First, run the development server:
