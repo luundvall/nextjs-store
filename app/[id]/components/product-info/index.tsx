@@ -35,7 +35,7 @@ export function ProductInfo({device}: { device: Device }) {
                     <ChevronRight className="h-4 w-4"/>
                 </Button>}
             </div>
-            <h1 className="mb-1 text-2xl font-semibold text-gray-800">{name}</h1>so
+            <h1 className="mb-1 text-2xl font-semibold text-gray-800">{name}</h1>
             <p className="mb-6 text-sm text-gray-500">{lineName}</p>
             <Separator/>
             <div className="divide-y">
