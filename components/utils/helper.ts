@@ -1,14 +1,4 @@
-import React from "react";
 import {Device} from "@/components/types/device";
-
-export function useDebounced<T>(value: T, delay = 1000) {
-    const [debounced, setDebounced] = React.useState(value);
-    React.useEffect(() => {
-        const id = setTimeout(() => setDebounced(value), delay);
-        return () => clearTimeout(id);
-    }, [value, delay]);
-    return debounced;
-}
 
 export function apiLinkToPagePath(link: string | null | undefined, basePath: string = "") {
     if (!link) return null;

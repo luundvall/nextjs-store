@@ -15,16 +15,12 @@ export function Menu() {
     const {meta} = response;
     const debouncedQ = useDebounced(q.trim(), 1000);
     const [cleared, setCleared] = useState(false);
-
-    const abortRef = useRef<AbortController | null>(null);
     const lastAppliedRef = useRef<string>("");
 
     useEffect(() => {
-        // if user cleared the input after pause -> reset to initial server response
+
         if (!debouncedQ && !cleared) {
             setCleared(true)
-            abortRef.current?.abort();
-            abortRef.current = null;
             lastAppliedRef.current = "";
             (async () => {
                 try {
@@ -38,11 +34,6 @@ export function Menu() {
         }
 
         if (debouncedQ === lastAppliedRef.current) return;
-
-        abortRef.current?.abort();
-        const ac = new AbortController();
-        abortRef.current = ac;
-
         (async () => {
             try {
                 setCleared(false)
@@ -58,8 +49,6 @@ export function Menu() {
                 throw new Error("Failed to fetch devices");
             }
         })();
-
-        return () => ac.abort();
     }, [debouncedQ, pageNumber, defaultPageSize, setResponse, response]);
 
     return (
