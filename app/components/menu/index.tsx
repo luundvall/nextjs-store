@@ -14,11 +14,9 @@ export function Menu() {
     const {view, setView, query: q, setQuery, response, setResponse} = useDevicesUI();
     const {meta} = response;
     const debouncedQ = useDebounced(q.trim(), 1000);
-    const [cleared, setCleared] = useState(false);
+    const [cleared, setCleared] = useState(true);
     const lastAppliedRef = useRef<string>("");
-
     useEffect(() => {
-
         if (!debouncedQ && !cleared) {
             setCleared(true)
             lastAppliedRef.current = "";

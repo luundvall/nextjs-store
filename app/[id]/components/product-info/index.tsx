@@ -26,12 +26,14 @@ export function ProductInfo({device}: { device: Device }) {
     return (
         <>
             <div className="absolute right-4 top-4 flex gap-2">
-                <Button onClick={() => router.push(`/${previousId}`)} variant="outline" size="icon" className="rounded-xl" aria-label="Previous">
+                {previousId && <Button onClick={() => router.push(`/${previousId}`)} variant="outline" size="icon"
+                         className="rounded-xl" aria-label="Previous">
                     <ChevronLeft className="h-4 w-4"/>
-                </Button>
-                <Button onClick={() => router.push(`/${nextId}`)} variant="outline" size="icon" className="rounded-xl" aria-label="Next">
+                </Button>}
+                {nextId && <Button onClick={() => router.push(`/${nextId}`)} variant="outline" size="icon" className="rounded-xl"
+                         aria-label="Next">
                     <ChevronRight className="h-4 w-4"/>
-                </Button>
+                </Button>}
             </div>
             <h1 className="mb-1 text-2xl font-semibold text-gray-800">{name}</h1>so
             <p className="mb-6 text-sm text-gray-500">{lineName}</p>
