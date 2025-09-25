@@ -1,4 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type {NextApiRequest, NextApiResponse} from 'next'
+import {Device} from '@/components/types/device';
 
 const fetchUrl = 'https://static.ui.com/fingerprint/ui/public.json';
 
@@ -23,46 +24,24 @@ type ResponseError = {
     message: string;
 }
 
-type Device = {
-    id: string;
-    sku?: string;
-    product?: { name?: string; abbrev?: string };
-    shortnames?: string[];
-    line?: { id?: string; name?: string };
-};
-
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ResponseData | ResponseError>
 ) {
-    // parse URL
     try {
         const url = new URL(`http://${process.env.HOST ?? 'localhost'}${req.url}`);
-        const { q, line, page, pageSize } = getQueryParams(url);
-        const r = await fetch(fetchUrl, { cache: "force-cache" });
+        const {q, page, pageSize} = getQueryParams(url);
+        const r = await fetch(fetchUrl, {cache: "force-cache"});
         if (!r.ok) {
             throw new Error()
         }
         const raw = (await r.json()) as { devices?: Device[] };
         let list: Device[] = raw.devices ?? [];
-        // filter
-        if (line) {
-            list = list.filter(
-                d =>
-                    d.line?.id?.toLowerCase() === line ||
-                    d.line?.name?.toLowerCase() === line
-            );
-        }
+
         if (q) {
             list = list.filter(d => matchesQuery(d, q));
         }
-
-        list.sort(
-            (a, b) =>
-                (a.product?.name || "").localeCompare(b.product?.name || "") ||
-                (a.sku || "").localeCompare(b.sku || "") ||
-                (a.id || "").localeCompare(b.id || "")
-        );
+        list.sort((a, b) => (a.product?.name || "").localeCompare(b.product?.name || ""));
 
         // paginate
         const total = list.length;
@@ -72,17 +51,10 @@ export default async function handler(
         const end = Math.min(start + pageSize, total);
         const slice = list.slice(start, end);
 
-        // HATEOAS-style links (relative)
         const links = {
-            self: withParams(url, { page: currentPage, pageSize }),
-            prev:
-                currentPage > 1
-                    ? withParams(url, { page: currentPage - 1, pageSize })
-                    : null,
-            next:
-                currentPage < totalPages
-                    ? withParams(url, { page: currentPage + 1, pageSize })
-                    : null,
+            self: withParams(url, {page: currentPage, pageSize}),
+            prev: currentPage > 1 ? withParams(url, {page: currentPage - 1, pageSize}) : null,
+            next: currentPage < totalPages ? withParams(url, {page: currentPage + 1, pageSize}) : null,
         };
 
         res.json({
@@ -98,7 +70,7 @@ export default async function handler(
             links,
         });
     } catch (error: any) {
-        res.status(500).json({ message: `something wen wrong: ${error?.message}` })
+        res.status(500).json({message: `something wen wrong: ${error?.message}`})
     }
 }
 
@@ -107,8 +79,7 @@ function getQueryParams(
 ) {
     return {
         q: (url.searchParams.get("q") || "").trim().toLowerCase(),
-        line: (url.searchParams.get("line") || "").trim().toLowerCase(),
-        page: clampInt(url.searchParams.get("page"), 1, 1),
+        page: clampInt(url.searchParams.get("page"), 1, 1, 100),
         pageSize: clampInt(url.searchParams.get("pageSize"), 50, 1, 200), // cap max page size
     }
 }
@@ -116,8 +87,8 @@ function getQueryParams(
 function clampInt(
     val: string | null,
     fallback: number,
-    min = Number.MIN_SAFE_INTEGER,
-    max = Number.MAX_SAFE_INTEGER
+    min: number,
+    max: number
 ) {
     const n = Number(val ?? "");
     if (!Number.isFinite(n)) return fallback;

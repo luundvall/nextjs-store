@@ -1,10 +1,6 @@
+import {Device} from "../types/device";
 type FetchParams = { page: number; pageSize: number, q?: string };
 
-export type Device = {
-    id: string;
-    product: { name: string; abbrev: string };
-    images: { default: string; nopadding: string; topology: string };
-};
 
 export type DevicesResponse = {
     devices: Device[];
@@ -24,13 +20,26 @@ export type DevicesResponse = {
 };
 
 export async function getDevices(params: FetchParams) {
-    const { page, pageSize, q } = params;
+    const {page, pageSize, q} = params;
     const url = new URL("/api/devices", process.env.APP_URL || window.location.origin);
     if (q) url.searchParams.set("q", q);
     if (page) url.searchParams.set("page", page.toString());
     if (pageSize) url.searchParams.set("pageSize", pageSize.toString());
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, {cache: "no-store"});
     if (!res.ok) throw new Error(await res.text());
     return (await res.json()) as DevicesResponse;
+}
+
+export async function getDevice(params: { deviceId: string }) {
+    try {
+        const {deviceId} = params;
+        const url = new URL(`/api/device/?id=${deviceId}`, process.env.APP_URL || window.location.origin);
+        const res = await fetch(url, {cache: "no-store"});
+
+        if (!res.ok) throw new Error(await res.text());
+        return (await res.json()) as Device;
+    } catch (error) {
+        throw error;
+    }
 }
 

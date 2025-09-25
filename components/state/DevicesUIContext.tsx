@@ -32,10 +32,10 @@ export function DevicesUIProvider({
     children: React.ReactNode;
     initialView?: ViewMode;
     data?: DevicesResponse;
-    searchParams: SearchParams;
+    searchParams: SearchParams | undefined;
 }) {
     const [view, setView] = React.useState<ViewMode>(initialView);
-    const [query, setQuery] = React.useState(searchParams.q ?? "");
+    const [query, setQuery] = React.useState(searchParams?.q ?? "");
     const [response, setResponse] = React.useState<DevicesResponse>(data);
     useEffect(() => {
         setResponse(data)

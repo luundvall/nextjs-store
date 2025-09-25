@@ -1,5 +1,5 @@
 import React from "react";
-import {Device} from "@/components/server/queries";
+import {Device} from "@/components/types/device";
 
 export function useDebounced<T>(value: T, delay = 1000) {
     const [debounced, setDebounced] = React.useState(value);
@@ -23,9 +23,9 @@ export function apiLinkToPagePath(link: string | null | undefined, basePath: str
     }
 }
 
-export function getImageSrc(device: Device, size = 64) {
+export function getImageSrc(device: Device, width = 64) {
     const domain = "https://images.svc.ui.com"
     const staticUrl = `https://static.ui.com/fingerprint/ui/images/${device.id}/default/${device.images.default}.png`
     const encoded = encodeURIComponent(staticUrl)
-    return `${domain}/?u=${encoded}&w=${size}&q=75`
+    return `${domain}/?u=${encoded}&w=${width}&q=75`
 }

@@ -1,11 +1,13 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
-import ProductImage from "@/components/ui/product-image";
+import {ProductImage} from "@/components/ui/product-image";
 import {getImageSrc} from "@/components/utils/helper";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {useDevicesUI} from "@/components/state/DevicesUIContext";
+import {useRouter} from "next/navigation";
 
 export function Products() {
     const {view, response: {devices}} = useDevicesUI();
+    const router = useRouter();
 
     if (view === "list") {
         return (
@@ -19,8 +21,12 @@ export function Products() {
                 </TableHeader>
                 <TableBody>
                     {devices.map((d) => (
-                        <TableRow key={d.id} className="hover:bg-muted/30">
-                            <TableCell><ProductImage src={getImageSrc(d)}/></TableCell>
+                        <TableRow key={d.id} className="hover:bg-muted/30" onClick={() => router.push(`/${d.id}`)}>
+                            <TableCell>
+                                <div className="relative h-8 w-8">
+                                    <ProductImage height={32} src={getImageSrc(d)} width={32}/>
+                                </div>
+                            </TableCell>
                             <TableCell className="font-medium">{d.product.abbrev}</TableCell>
                             <TableCell>{d.product.name}</TableCell>
                         </TableRow>
@@ -34,7 +40,8 @@ export function Products() {
         <div
             className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {devices.map((d) => (
-                <Card key={d.id} className="hover:shadow-md transition-shadow">
+                <Card key={d.id} className="hover:shadow-md transition-shadow" onClick={() => router.push(`/${d.id}`)}>
+                    <ProductImage height={320} src={getImageSrc(d, 320)} width={320}/>
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-semibold">{d.product.name}</CardTitle>
                     </CardHeader>
