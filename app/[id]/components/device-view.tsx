@@ -3,16 +3,16 @@
 import {Device} from "@/components/types/device";
 import {MenuWrapper} from "@/components/ui/menu-wrapper"
 import {Card, CardContent} from "@/components/ui/card";
-import {ChevronLeft, ChevronRight} from "lucide-react";
+import {ChevronLeft} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {ProductImage} from "@/components/ui/product-image";
 import React from "react";
 import {getImageSrc} from "@/components/utils/helper";
 import {ProductInfo} from "./product-info";
 import {useRouter} from "next/navigation";
+import {DetailsJSON} from "@/app/[id]/components/details-json";
 
-export function DeviceView({response}: { response?: Device | null }) {
-    const device = response;
+export function DeviceView({response: device}: { response?: Device | null }) {
     const router = useRouter();
     return (
         <>
@@ -37,6 +37,7 @@ export function DeviceView({response}: { response?: Device | null }) {
                             {!device && <div className="text-center text-sm text-muted-foreground">No device found</div>}
                         </CardContent>
                     </Card>
+                    <DetailsJSON device={device}/>
                 </div>
             </main>
         </>
